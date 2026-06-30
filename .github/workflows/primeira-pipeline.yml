@@ -1,31 +1,19 @@
-name: Secrets Masking Bypass
+name: Check Secret Availability
 
 on:
-  workflow_dispatch:
+  pull_request:
 
 jobs:
-  masking-bypass:
+  check-secret:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Test GITHUB_TOKEN
+      - name: Check if secret exists
         env:
-          TOKEN: ${{ github.token }}
+          SECRET_TEST: ${{ secrets.SECRET_TEST }}
         run: |
-          echo "=== GITHUB_TOKEN original ==="
-          echo "$TOKEN"
-
-          echo "=== GITHUB_TOKEN rev ==="
-          echo "$TOKEN" | rev
-
-          echo "=== GITHUB_TOKEN hyphen ==="
-          echo "$TOKEN" | sed 's/$begin:math:text$\.\.$end:math:text$/\1-/g'
-
-          echo "=== GITHUB_TOKEN split ==="
-          printf "%s" "${TOKEN:0:8}"
-          printf "%s\n" "${TOKEN:8}"
+          if [ -z "$SECRET_TEST" ]; then
+            echo "SECRET_TEST not available"
+          else
+            echo "SECRET_TEST available"
+          fi
