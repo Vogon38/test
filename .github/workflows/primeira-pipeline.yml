@@ -1,31 +1,19 @@
-name: Secrets Masking Bypass
+name: PR Test
 
 on:
-  workflow_dispatch:
+  pull_request:
 
 jobs:
-  masking-bypass:
+  check:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Test GITHUB_TOKEN
+      - name: Check secret
         env:
-          TOKEN: ${{ github.token }}
+          TEST_MASKED: ${{ secrets.TEST_MASKED }}
         run: |
-          echo "=== GITHUB_TOKEN original ==="
-          echo "$TOKEN"
-
-          echo "=== GITHUB_TOKEN rev ==="
-          echo "$TOKEN" | rev
-
-          echo "=== GITHUB_TOKEN hyphen ==="
-          echo "$TOKEN" | sed 's/$begin:math:text$\.\.$end:math:text$/\1-/g'
-
-          echo "=== GITHUB_TOKEN split ==="
-          printf "%s" "${TOKEN:0:8}"
-          printf "%s\n" "${TOKEN:8}"
+          if [ -z "$TEST_MASKED" ]; then
+            echo "Secret unavailable"
+          else
+            echo "Secret available"
+          fi
