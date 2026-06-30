@@ -1,19 +1,19 @@
-name: Check Secret Availability
+name: PR Test
 
 on:
   pull_request:
 
 jobs:
-  check-secret:
+  check:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check if secret exists
+      - name: Check secret
         env:
-          SECRET_TEST: ${{ secrets.SECRET_TEST }}
+          TEST_MASKED: ${{ secrets.TEST_MASKED }}
         run: |
-          if [ -z "$SECRET_TEST" ]; then
-            echo "SECRET_TEST not available"
+          if [ -z "$TEST_MASKED" ]; then
+            echo "Secret unavailable"
           else
-            echo "SECRET_TEST available"
+            echo "Secret available"
           fi
