@@ -1,0 +1,21 @@
+name: Pipeline de Teste
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  teste_seguranca:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Demonstração de Limitação de Mascaramento
+        env:
+          MINHA_VARIAVEL_CONFIDENCIAL: ${{ secrets.TEST_MASKED }}
+        run: |
+          echo "Tentando exibir direto: $MINHA_VARIAVEL_CONFIDENCIAL"
+          echo "Exibindo com transformação Base64:"
+          echo -n "$MINHA_VARIAVEL_CONFIDENCIAL" | base64
