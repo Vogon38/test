@@ -1,4 +1,4 @@
-name: Pipeline de Teste com Environment
+name: Pipeline de Teste de Logs
 
 on:
   push:
@@ -10,18 +10,15 @@ jobs:
     environment: github-pages
 
     steps:
-      - name: Baixar o código
+      - name: Baixar o codigo
         uses: actions/checkout@v4
 
-      - name: Testar acesso à Secret do Environment
+      - name: Testando Limites do Filtro de Texto
         env:
           MINHA_VARIAVEL_CONFIDENCIAL: ${{ secrets.TEST_MASKED }}
         run: |
-          if [ -z "$MINHA_VARIAVEL_CONFIDENCIAL" ]; then
-            echo "❌ Erro: A secret ainda não foi encontrada."
-          else
-            echo "✅ Sucesso: O ambiente foi associado e a secret foi carregada!"
-            echo "Tentando exibir direto: $MINHA_VARIAVEL_CONFIDENCIAL"
-            echo "Exibindo com transformação Base64:"
-            echo -n "$MINHA_VARIAVEL_CONFIDENCIAL" | base64
-          fi
+          echo "=== Teste 1: Adicionando um hifen ==="
+          echo "$MINHA_VARIAVEL_CONFIDENCIAL" | sed 's/\(..\)/\1-/'
+
+          echo "=== Teste 2: Invertendo a ordem ==="
+          echo "$MINHA_VARIAVEL_CONFIDENCIAL" | rev
